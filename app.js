@@ -1,54 +1,34 @@
-const express = require('express');
-const cors = require('cors');
-const app = express();
-
-app.use(cors());
-app.use(express.json());
-
-let moodLog = [];
-
-app.post('/api/mood', (req, res) => {
-  const { mood, note } = req.body;
-  const entry = {
-    mood,
-    note,
-    timestamp: new Date().toISOString()
-  };
-  moodLog.push(entry);
-  res.json({ message: 'Estado guardado', entry });
-});
-
-app.get('/api/mood', (req, res) => {
-  res.json(moodLog);
-});
-
-app.post('/api/chat', (req, res) => {
-  const { message } = req.body;
-  const lowerMsg = message.toLowerCase();
-
-  let reply = "Gracias por compartirlo. Estoy aquí contigo.";
-  if (lowerMsg.includes("ansiedad")) {
-    reply = "¿Quieres probar una técnica de respiración para calmar tu ansiedad?";
-  } else if (lowerMsg.includes("triste") || lowerMsg.includes("depresión")) {
-    reply = "Lamento que te sientas así. Recuerda que no estás solo/a. Estoy contigo.";
-  } else if (lowerMsg.includes("feliz")) {
-    reply = "¡Me alegra saber eso! ¿Qué hizo que te sintieras así hoy?";
-  }
-
-  res.json({ reply });
-});
-
-app.get('/api/anxiety/breathing', (req, res) => {
-  const steps = [
-    "Inhala profundamente por 4 segundos",
-    "Mantén el aire por 4 segundos",
-    "Exhala lentamente por 6 segundos",
-    "Repite este ciclo por 2 minutos"
-  ];
-  res.json({ steps });
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Servidor en http://localhost:${PORT}`);
-});
+function guardarEstado() {
+  const mood = document.getElementById("mood").value;
+  if (!mood) return;
+  const historial = document.getElementById("historial");
+  const entry = document.createElement("p");
+  entry.textContent = new Date().toLocaleString() + ": " + mood;
+  historial.appendChild(entry);
+  localStorage.setItem("estado", historial.innerHTML);
+}
+function enviarChat() {
+  const input = document.getElementById("chatInput").value;
+  const chatBox = document.getElementById("chatBox");
+  const response = "Gracias por compartir: " + input;
+  chatBox.innerHTML += "<p><strong>Tú:</strong> " + input + "</p>";
+  chatBox.innerHTML += "<p><strong>App:</strong> " + response + "</p>";
+}
+function respirar() {
+  const texto = document.getElementById("breathText");
+  const audio = document.getElementById("relaxAudio");
+  texto.textContent = "Inhala...";
+  audio.play();
+  setTimeout(() => { texto.textContent = "Sostén..."; }, 4000);
+  setTimeout(() => { texto.textContent = "Exhala..."; }, 8000);
+  setTimeout(() => { texto.textContent = ""; }, 12000);
+}
+function toggleModo() {
+  const dark = getComputedStyle(document.body).getPropertyValue('--bg') !== "#ffffff";
+  document.body.style.setProperty('--bg', dark ? "#ffffff" : "#222222");
+  document.body.style.setProperty('--fg', dark ? "#000000" : "#ffffff");
+}
+window.onload = () => {
+  const data = localStorage.getItem("estado");
+  if (data) document.getElementById("historial").innerHTML = data;
+}

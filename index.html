@@ -3,85 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#222222" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
   <title>Bienestar Total</title>
-  <style>
-    body { font-family: sans-serif; padding: 2rem; background: #f9f9f9; color: #333; }
-    input, textarea, button { margin-top: 1rem; display: block; width: 100%; max-width: 400px; padding: 0.5rem; }
-    #entries, #response, #breathingSteps { margin-top: 1rem; }
-    .entry { border-bottom: 1px solid #ddd; padding: .5rem 0; }
-    button { background: #4CAF50; color: white; border: none; border-radius: 6px; cursor: pointer; }
-    button:hover { background: #45a049; }
-  </style>
 </head>
 <body>
-  <h1>Bienestar Total</h1>
-
-  <h2>📘 Registrar estado de ánimo</h2>
-  <input id="mood" placeholder="¿Cómo te sientes hoy? (Ej. Triste, Feliz)" />
-  <textarea id="note" placeholder="¿Algo que quieras anotar?"></textarea>
-  <button onclick="submitMood()">Guardar estado</button>
-  <div id="entries"></div>
-
-  <h2>💬 Chat de apoyo</h2>
-  <input id="message" placeholder="Escribe cómo te sientes..." />
-  <button onclick="sendMessage()">Enviar</button>
-  <div id="response"></div>
-
-  <h2>🌬️ Técnica de respiración</h2>
-  <button onclick="getBreathing()">Ver pasos</button>
-  <ul id="breathingSteps"></ul>
-
+  <div class="container">
+    <h1>🌱 Bienestar Total</h1>
+    <label for="mood">¿Cómo te sientes hoy?</label>
+    <input type="text" id="mood" placeholder="Escribe aquí tu emoción..." />
+    <button onclick="guardarEstado()">Guardar</button>
+    <div id="historial"></div>
+    <hr/>
+    <h2>🗣️ Chat emocional</h2>
+    <input type="text" id="chatInput" placeholder="Cuéntame algo..." />
+    <button onclick="enviarChat()">Enviar</button>
+    <div id="chatBox"></div>
+    <hr/>
+    <h2>🌬️ Respiración guiada</h2>
+    <button onclick="respirar()">Iniciar</button>
+    <p id="breathText"></p>
+    <audio id="relaxAudio" src="audio/relax.mp3" loop></audio>
+    <hr/>
+    <button onclick="toggleModo()">🌙/☀️ Modo</button>
+  </div>
+  <script src="app.js"></script>
   <script>
-    async function loadMoods() {
-      const stored = JSON.parse(localStorage.getItem("moods") || "[]");
-      const container = document.getElementById('entries');
-      container.innerHTML = '<h3>Historial:</h3>';
-      stored.slice().reverse().forEach(e => {
-        const div = document.createElement('div');
-        div.className = 'entry';
-        div.innerHTML = `<strong>${new Date(e.timestamp).toLocaleString()}</strong>: <em>${e.mood}</em><br>${e.note}`;
-        container.appendChild(div);
-      });
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
     }
-
-    async function submitMood() {
-      const mood = document.getElementById('mood').value;
-      const note = document.getElementById('note').value;
-      if (!mood) return alert('Por favor escribe cómo te sientes.');
-      const entry = { mood, note, timestamp: new Date().toISOString() };
-      const current = JSON.parse(localStorage.getItem("moods") || "[]");
-      current.push(entry);
-      localStorage.setItem("moods", JSON.stringify(current));
-      document.getElementById('mood').value = '';
-      document.getElementById('note').value = '';
-      loadMoods();
-    }
-
-    async function sendMessage() {
-      const msg = document.getElementById('message').value;
-      if (!msg) return;
-      const reply = "Gracias por compartir. Estoy aquí contigo. Respira profundo. 💙";
-      document.getElementById('response').innerText = reply;
-      document.getElementById('message').value = '';
-    }
-
-    async function getBreathing() {
-      const steps = [
-        "1️⃣ Inhala lentamente contando hasta 4.",
-        "2️⃣ Sostén la respiración por 4 segundos.",
-        "3️⃣ Exhala lentamente contando hasta 6.",
-        "4️⃣ Repite este ciclo durante 1-2 minutos."
-      ];
-      const list = document.getElementById('breathingSteps');
-      list.innerHTML = '';
-      steps.forEach(s => {
-        const li = document.createElement('li');
-        li.textContent = s;
-        list.appendChild(li);
-      });
-    }
-
-    window.onload = loadMoods;
   </script>
 </body>
 </html>
