@@ -1,11 +1,69 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bienestar Total</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; }
+    input, textarea, button { margin-top: 1rem; display: block; width: 100%; max-width: 400px; }
+    #response { margin-top: 1rem; }
+  </style>
 </head>
 <body>
   <h1>Bienestar Total</h1>
-  <p>API en funcionamiento. Interfaz completa próximamente.</p>
+
+  <h2>📘 Registrar estado de ánimo</h2>
+  <input id="mood" placeholder="¿Cómo te sientes hoy? (ej. Triste, Feliz)" />
+  <textarea id="note" placeholder="¿Algo que quieras anotar?"></textarea>
+  <button onclick="submitMood()">Guardar estado</button>
+
+  <h2>💬 Chat de apoyo</h2>
+  <input id="message" placeholder="Escribe cómo te sientes..." />
+  <button onclick="sendMessage()">Enviar</button>
+
+  <div id="response"></div>
+
+  <h2>🌬️ Técnica de respiración</h2>
+  <button onclick="getBreathing()">Ver pasos</button>
+  <ul id="breathingSteps"></ul>
+
+  <script>
+    async function submitMood() {
+      const mood = document.getElementById('mood').value;
+      const note = document.getElementById('note').value;
+      const res = await fetch('/api/mood', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mood, note })
+      });
+      const data = await res.json();
+      alert('Estado guardado: ' + JSON.stringify(data.entry));
+    }
+
+    async function sendMessage() {
+      const message = document.getElementById('message').value;
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message })
+      });
+      const data = await res.json();
+      document.getElementById('response').innerText = data.reply;
+    }
+
+    async function getBreathing() {
+      const res = await fetch('/api/anxiety/breathing');
+      const data = await res.json();
+      const stepsList = document.getElementById('breathingSteps');
+      stepsList.innerHTML = '';
+      data.steps.forEach(step => {
+        const li = document.createElement('li');
+        li.textContent = step;
+        stepsList.appendChild(li);
+      });
+    }
+  </script>
 </body>
 </html>
