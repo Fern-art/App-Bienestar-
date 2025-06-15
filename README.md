@@ -1,28 +1,19 @@
-# Bienestar Total 🌱
+# Bienestar Total (Netlify Version)
 
-Una aplicación ligera para registrar emociones, recibir apoyo inmediato, y practicar técnicas de respiración.
+Una app web simple para registrar emociones, conversar con un asistente emocional y practicar respiración consciente.
 
-## Funcionalidades
+## ✅ Funciones
 
-- ✅ Registro diario de estado de ánimo
-- 💬 Chat emocional de apoyo
-- 🌬️ Técnica de respiración para la ansiedad
+- Registrar estado de ánimo (guardado local).
+- Chat de apoyo emocional básico.
+- Técnica de respiración guiada.
 
-## Despliegue rápido
+## 🚀 Deploy en Netlify
 
-1. **Sube este repositorio a GitHub.**
-2. **Conéctalo en [Vercel](https://vercel.com) o [Netlify](https://netlify.com).**
-3. **Establece la carpeta `public/` como raíz del proyecto.**
+1. Sube el contenido a GitHub.
+2. En Netlify, selecciona:
+   - **Build command**: (vacío)
+   - **Publish directory**: `public`
+3. ¡Listo!
 
-## Estructura
-
-```
-📁 public/
-└── index.html       ← Página principal
-vercel.json          ← Reescribe rutas API
-README.md            ← Este archivo
-```
-
----
-
-Hecho con ❤️ para tu bienestar.
+*Por ahora los datos se guardan en el navegador del usuario (localStorage).*

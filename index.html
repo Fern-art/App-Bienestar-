@@ -5,10 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bienestar Total</title>
   <style>
-    body { font-family: sans-serif; padding: 2rem; }
-    input, textarea, button { margin-top: 1rem; display: block; width: 100%; max-width: 400px; }
+    body { font-family: sans-serif; padding: 2rem; background: #f9f9f9; color: #333; }
+    input, textarea, button { margin-top: 1rem; display: block; width: 100%; max-width: 400px; padding: 0.5rem; }
     #entries, #response, #breathingSteps { margin-top: 1rem; }
     .entry { border-bottom: 1px solid #ddd; padding: .5rem 0; }
+    button { background: #4CAF50; color: white; border: none; border-radius: 6px; cursor: pointer; }
+    button:hover { background: #45a049; }
   </style>
 </head>
 <body>
@@ -31,11 +33,10 @@
 
   <script>
     async function loadMoods() {
-      const res = await fetch('/api/mood');
-      const data = await res.json();
+      const stored = JSON.parse(localStorage.getItem("moods") || "[]");
       const container = document.getElementById('entries');
       container.innerHTML = '<h3>Historial:</h3>';
-      data.slice().reverse().forEach(e => {
+      stored.slice().reverse().forEach(e => {
         const div = document.createElement('div');
         div.className = 'entry';
         div.innerHTML = `<strong>${new Date(e.timestamp).toLocaleString()}</strong>: <em>${e.mood}</em><br>${e.note}`;
@@ -47,31 +48,30 @@
       const mood = document.getElementById('mood').value;
       const note = document.getElementById('note').value;
       if (!mood) return alert('Por favor escribe cómo te sientes.');
-      const res = await fetch('/api/mood', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mood, note })
-      });
-      await res.json();
+      const entry = { mood, note, timestamp: new Date().toISOString() };
+      const current = JSON.parse(localStorage.getItem("moods") || "[]");
+      current.push(entry);
+      localStorage.setItem("moods", JSON.stringify(current));
       document.getElementById('mood').value = '';
       document.getElementById('note').value = '';
-      await loadMoods();
+      loadMoods();
     }
 
     async function sendMessage() {
       const msg = document.getElementById('message').value;
       if (!msg) return;
-      const res = await fetch('/api/chat', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: msg })
-      });
-      const { reply } = await res.json();
+      const reply = "Gracias por compartir. Estoy aquí contigo. Respira profundo. 💙";
       document.getElementById('response').innerText = reply;
       document.getElementById('message').value = '';
     }
 
     async function getBreathing() {
-      const res = await fetch('/api/anxiety/breathing');
-      const { steps } = await res.json();
+      const steps = [
+        "1️⃣ Inhala lentamente contando hasta 4.",
+        "2️⃣ Sostén la respiración por 4 segundos.",
+        "3️⃣ Exhala lentamente contando hasta 6.",
+        "4️⃣ Repite este ciclo durante 1-2 minutos."
+      ];
       const list = document.getElementById('breathingSteps');
       list.innerHTML = '';
       steps.forEach(s => {
