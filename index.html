@@ -3,26 +3,50 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#222222" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
   <title>Bienestar Total</title>
 
   <style>
-    /* 🌙 MODO OSCURO */
-    .dark-mode {
-      background-color: #121212 !important;
-      color: #ffffff !important;
+    body.dark {
+      background-color: #121212;
+      color: #ffffff;
     }
-    .dark-mode input,
-    .dark-mode textarea,
-    .dark-mode button {
-      background-color: #1e1e1e !important;
-      color: #ffffff !important;
-      border-color: #333 !important;
+
+    body.dark input,
+    body.dark textarea,
+    body.dark button {
+      background-color: #1e1e1e;
+      color: #fff;
+      border: 1px solid #333;
     }
   </style>
 </head>
 <body>
-  <h1>Bienestar Total</h1>
-  <p>Tu espacio para manejar emociones, conectar y respirar.</p>
+  <div class="container">
+    <h1>🌱 Bienestar Total</h1>
+
+    <label for="mood">¿Cómo te sientes hoy?</label>
+    <input type="text" id="mood" placeholder="Escribe aquí tu emoción..." />
+    <button onclick="guardarEstado()">Guardar</button>
+    <div id="historial"></div>
+
+    <hr/>
+    <h2>🗣️ Chat emocional</h2>
+    <input type="text" id="chatInput" placeholder="Cuéntame algo..." />
+    <button onclick="enviarChat()">Enviar</button>
+    <div id="chatBox"></div>
+
+    <hr/>
+    <h2>🌬️ Respiración guiada</h2>
+    <button onclick="respirar()">Iniciar</button>
+    <p id="breathText"></p>
+    <audio id="relaxAudio" src="audio/relax.mp3" loop></audio>
+
+    <hr/>
+    <button onclick="toggleModo()">🌙/☀️ Modo</button>
+  </div>
 
   <!-- 🌐 TRADUCTOR DE GOOGLE -->
   <div id="google_translate_element" style="position: fixed; bottom: 10px; left: 10px; z-index: 10000;"></div>
@@ -33,27 +57,16 @@
   </script>
   <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
-  <!-- 🌙 BOTÓN DE MODO OSCURO -->
+  <script src="app.js"></script>
   <script>
-    function toggleDarkMode() {
-      document.body.classList.toggle('dark-mode');
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
-      const toggle = document.createElement("button");
-      toggle.innerText = "🌓 Modo Oscuro";
-      toggle.onclick = toggleDarkMode;
-      toggle.style.position = "fixed";
-      toggle.style.top = "10px";
-      toggle.style.right = "10px";
-      toggle.style.zIndex = "9999";
-      toggle.style.padding = "10px";
-      toggle.style.background = "#333";
-      toggle.style.color = "#fff";
-      toggle.style.border = "none";
-      toggle.style.borderRadius = "8px";
-      document.body.appendChild(toggle);
-    });
+    // 🌙 MODO OSCURO/CLARO
+    function toggleModo() {
+      document.body.classList.toggle('dark');
+    }
   </script>
 </body>
 </html>
