@@ -1,13 +1,20 @@
 {
-  "name": "Bienestar Total",
-  "short_name": "Bienestar",
-  "start_url": ".",
+  "name": "Mi Diario Emocional con mi Lomito",
+  "short_name": "Diario Lomito",
+  "start_url": "./diario.html",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "description": "App de apoyo emocional y bienestar",
-  "icons": [{
-    "src": "icon.png",
-    "sizes": "192x192",
-    "type": "image/png"
-  }]
+  "background_color": "#fff7f0",
+  "theme_color": "#d65a31",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
